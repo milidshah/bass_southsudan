@@ -1,0 +1,112 @@
+---
+title: "Survey Dashboard"
+subtitle: "2024 IOM South Sudan"
+author: "Data & Methods Subteam - Bass Connections"
+date: "2024-09-24"
+output:
+ html_document:
+   theme: journal
+   toc: true
+   toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(readxl)
+library(purrr)
+library(janitor)
+library(forcats)
+library(scales)
+library(knitr)
+library(kableExtra)
+library(sjmisc)
+library(likert)
+library(writexl)
+
+options(digits=2)
+```
+
+```{r data, include=FALSE}
+
+# Setting up directory
+
+# Renan
+setwd("G:/.shortcut-targets-by-id/1vb8pjBFn0skX769fagfR8mbbt6mXSnjI/Bass Team South Sudan/Sub-Team Folders/1. Methods & Data/")
+
+# Loading and joining data base  
+df <- read.csv("Descriptive Analysis/Bass_Team_Data_V2.csv")
+
+```
+
+Total number of respondents: **`r df %>% nrow()`**
+
+All question numbers below are based on the "Key Variables for Descriptive Statistics" doc file
+
+# 1) Socio-demographics questions
+
+## Q0.2 Language {.tabset} 
+
+### Entire sample
+
+```{r language 1, eval = TRUE, echo = FALSE, out.width="65%"}
+
+df %>%
+  group_by(Q0.2) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(answers)) %>%
+  select(Q0.2, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q0.2) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(-answers)) %>%
+  select(Q0.2, answers) %>%
+  mutate(percentage = answers / sum(answers),
+         Q0.2 = factor(Q0.2, levels = Q0.2)) %>%
+  ggplot(aes(Q0.2, answers)) +
+  geom_col(fill = "#263e58") +
+  labs(x = "Language", y = "Number of respondents") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.title.x = element_text(margin = margin(t = 10))) +
+  coord_flip()
+
+```
+
+### By county
+
+```{r language 2, eval = TRUE, echo = FALSE, out.width="65%"}
+
+df %>%
+  group_by(Q1.5_County, Q0.2) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(Q1.5_County)) %>%
+  select(Q0.2, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q1.5_County, Q0.2) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(-answers)) %>%
+  select(Q0.2, answers) %>%
+  mutate(percentage = answers / sum(answers),
+         Q0.2 = factor(Q0.2, levels = Q0.2)) %>%
+  ggplot(aes(Q0.2, answers)) +
+  geom_col(fill = "#263e58") +
+  facet_wrap(~ Q1.5_County) +
+  labs(x = "Language", y = "Number of respondents") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.title.x = element_text(margin = margin(t = 10))) +
+  coord_flip()
+
+```
+
+USE UNIMPUTED TO CALCULATE DESCRIPTIVE 
+
+# 2) Human Fragility
