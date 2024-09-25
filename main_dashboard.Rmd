@@ -1,0 +1,348 @@
+---
+title: "Survey Dashboard"
+subtitle: "2024 IOM South Sudan"
+author: "Data & Methods Subteam - Bass Connections"
+date: "2024-09-24"
+output:
+ html_document:
+   theme: journal
+   toc: true
+   toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(readxl)
+library(purrr)
+library(janitor)
+library(forcats)
+library(scales)
+library(knitr)
+library(kableExtra)
+library(sjmisc)
+library(likert)
+library(writexl)
+
+options(digits=2)
+```
+
+```{r data, include=FALSE}
+
+# Setting up directory
+
+# Renan
+setwd("G:/.shortcut-targets-by-id/1vb8pjBFn0skX769fagfR8mbbt6mXSnjI/Bass Team South Sudan/Sub-Team Folders/1. Methods & Data/")
+
+# Loading and joining data base  
+df <- read.csv("Descriptive Analysis/Bass_Team_Data_V2.csv")
+
+```
+
+Total number of respondents: **`r df %>% nrow()`**
+
+All question numbers below are based on the "Key Variables for Descriptive Statistics" doc file.
+
+All the descriptives calculated for index questions were based on the **unimputed** variable.
+
+# 1) Socio-demographics questions
+
+Coming soon...
+
+# 2) Human Fragility
+
+All the answers are in a *scale of 0-1**, i.e. can have the following values: 0, 0.25, 0.5, 0.75, 1. The higher, the more fragile.
+
+The higher, the more fragile.
+
+## Index Questions
+
+### Q5.5.1: Over the past year, how often, if ever, have you or anyone in your family gone without enough foor to eat? {.tabset} 
+
+#### Entire sample
+
+```{r Q5.5.1, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
+
+df %>% 
+  summarize(mean = mean(Q5.5.1_unimputed, na.rm = TRUE)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q5.5.1_raw) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(answers)) %>%
+  select(Q5.5.1_raw, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q5.5.1_raw) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(-answers)) %>%
+  select(Q5.5.1_raw, answers) %>%
+  mutate(percentage = answers / sum(answers),
+         Q5.5.1_raw = factor(Q5.5.1_raw)) %>%
+  ggplot(aes(Q5.5.1_raw, answers)) +
+  geom_col(fill = "#263e58") +
+  labs(x = "Q5.5.1", y = "Number of respondents") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.title.x = element_text(margin = margin(t = 10))) +
+  coord_flip()
+
+```
+
+#### By county
+
+```{r Q5.5.1 by county, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
+
+df %>% 
+  group_by(Q1.5_County) %>% 
+  summarize(mean = mean(Q5.5.1_unimputed, na.rm = TRUE)) %>% 
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q5.5.1_raw, Q1.5_County) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(Q1.5_County)) %>%
+  select(Q1.5_County, Q5.5.1_raw, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+```
+
+### Q5.5.2: Over the past year, how often, if ever, have you or anyone in your family gone without enough clean water for home use? {.tabset} 
+
+#### Entire sample
+
+```{r Q5.5.2, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+
+df %>% 
+  summarize(mean = mean(Q5.5.2_unimputed, na.rm = TRUE)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q5.5.2_raw) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(answers)) %>%
+  select(Q5.5.2_raw, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q5.5.2_raw) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(-answers)) %>%
+  select(Q5.5.2_raw, answers) %>%
+  mutate(percentage = answers / sum(answers),
+         Q5.5.2_raw = factor(Q5.5.2_raw)) %>%
+  ggplot(aes(Q5.5.2_raw, answers)) +
+  geom_col(fill = "#263e58") +
+  labs(x = "Q5.5.2", y = "Number of respondents") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.title.x = element_text(margin = margin(t = 10))) +
+  coord_flip()
+
+```
+
+#### By county
+
+```{r Q5.5.2 by county, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+
+df %>% 
+  group_by(Q1.5_County) %>% 
+  summarize(mean = mean(Q5.5.2_unimputed, na.rm = TRUE)) %>% 
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q5.5.2_raw, Q1.5_County) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(Q1.5_County)) %>%
+  select(Q1.5_County, Q5.5.2_raw, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+```
+
+### Q5.5.3: Over the past year, how often, if ever, have you or anyone in your family gone without necessary medicines or medical treatment? {.tabset} 
+
+#### Entire sample
+
+```{r Q5.5.3, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+
+df %>% 
+  summarize(mean = mean(Q5.5.3_unimputed, na.rm = TRUE)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q5.5.3_raw) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(answers)) %>%
+  select(Q5.5.3_raw, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q5.5.3_raw) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(-answers)) %>%
+  select(Q5.5.3_raw, answers) %>%
+  mutate(percentage = answers / sum(answers),
+         Q5.5.3_raw = factor(Q5.5.3_raw)) %>%
+  ggplot(aes(Q5.5.3_raw, answers)) +
+  geom_col(fill = "#263e58") +
+  labs(x = "Q5.5.3", y = "Number of respondents") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.title.x = element_text(margin = margin(t = 10))) +
+  coord_flip()
+
+```
+
+#### By county
+
+```{r Q5.5.3 by county, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+
+df %>% 
+  group_by(Q1.5_County) %>% 
+  summarize(mean = mean(Q5.5.3_unimputed, na.rm = TRUE)) %>% 
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q5.5.3_raw, Q1.5_County) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(Q1.5_County)) %>%
+  select(Q1.5_County, Q5.5.3_raw, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+```
+
+### Q7.1: What type of shelter are you currently living in? {.tabset} 
+
+#### Entire sample
+
+```{r Q7.1, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+
+df %>% 
+  summarize(mean = mean(Q7.1_unimputed, na.rm = TRUE)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q7.1_raw) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(answers)) %>%
+  select(Q7.1_raw, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q7.1_raw) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(-answers)) %>%
+  select(Q7.1_raw, answers) %>%
+  mutate(percentage = answers / sum(answers),
+         Q7.1_raw = factor(Q7.1_raw)) %>%
+  ggplot(aes(Q7.1_raw, answers)) +
+  geom_col(fill = "#263e58") +
+  labs(x = "Q7.1", y = "Number of respondents") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.title.x = element_text(margin = margin(t = 10))) +
+  coord_flip()
+
+```
+
+#### By county
+
+```{r Q7.1 by county, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+
+df %>% 
+  group_by(Q1.5_County) %>% 
+  summarize(mean = mean(Q7.1_unimputed, na.rm = TRUE)) %>% 
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q7.1_raw, Q1.5_County) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(Q1.5_County)) %>%
+  select(Q1.5_County, Q7.1_raw, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+```
+
+### Q8.5.6: On a scale from 1 to 5, where 1 means “very unfrightened” and 5 means “very frightened,” how afraid are you of the sexual violence in your community? {.tabset} 
+
+#### Entire sample
+
+```{r Q8.5.6, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+
+df %>% 
+  summarize(mean = mean(Q8.5.6_unimputed, na.rm = TRUE)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q8.5.6_raw) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(answers)) %>%
+  select(Q8.5.6_raw, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q8.5.6_raw) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(-answers)) %>%
+  select(Q8.5.6_raw, answers) %>%
+  mutate(percentage = answers / sum(answers),
+         Q8.5.6_raw = factor(Q8.5.6_raw)) %>%
+  ggplot(aes(Q8.5.6_raw, answers)) +
+  geom_col(fill = "#263e58") +
+  labs(x = "Q8.5.6", y = "Number of respondents") +
+  theme(axis.text.x = element_text(size = 11),
+        axis.title.x = element_text(margin = margin(t = 10))) +
+  coord_flip()
+
+```
+
+#### By county
+
+```{r Q8.5 by county, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+
+df %>% 
+  group_by(Q1.5_County) %>% 
+  summarize(mean = mean(Q8.5.6_unimputed, na.rm = TRUE)) %>% 
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+df %>%
+  group_by(Q8.5.6_raw, Q1.5_County) %>%
+  summarise(answers = n()) %>%
+  arrange(desc(Q1.5_County)) %>%
+  select(Q1.5_County, Q8.5.6_raw, answers) %>%
+  mutate(percentage = answers/sum(answers)) %>%
+  kable(align = "lc") %>%
+  kable_styling(position = "left", full_width = F)
+
+```
+
+## Additional Questions
+
+Coming soon...
