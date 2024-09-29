@@ -2,7 +2,7 @@
 title: "Survey Dashboard"
 subtitle: "2024 IOM South Sudan"
 author: "Data & Methods Subteam - Bass Connections"
-date: "2024-09-24"
+date: "2024-09-29"
 output:
  html_document:
    theme: journal
@@ -10,10 +10,21 @@ output:
    toc_float: true
 ---
 
+```{r}
+#install packages
+
+install.packages("sjmisc")
+install.packages("likert")
+
+
+```
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+library(ggplot2)
+library(ggthemes)
 library(readxl)
 library(purrr)
 library(janitor)
@@ -21,6 +32,7 @@ library(forcats)
 library(scales)
 library(knitr)
 library(kableExtra)
+
 library(sjmisc)
 library(likert)
 library(writexl)
@@ -32,11 +44,7 @@ options(digits=2)
 
 # Setting up directory
 
-# Renan
-setwd("G:/.shortcut-targets-by-id/1vb8pjBFn0skX769fagfR8mbbt6mXSnjI/Bass Team South Sudan/Sub-Team Folders/1. Methods & Data/")
-
-# Loading and joining data base  
-df <- read.csv("Descriptive Analysis/Bass_Team_Data_V2.csv")
+sudan_v2_df <- read.csv("data/Bass_Team_Data_V2.csv")
 
 ```
 
@@ -46,76 +54,87 @@ All question numbers below are based on the "Key Variables for Descriptive Stati
 
 All the descriptives calculated for index questions were based on the **unimputed** variable.
 
-# 1) Socio-demographics questions
+# 1) Political and Legal Fragility
 
-Coming soon...
-
-# 2) Human Fragility
-
-All the answers are in a *scale of 0-1**, i.e. can have the following values: 0, 0.25, 0.5, 0.75, 1. The higher, the more fragile.
+All the answers are in a \*scale of 0-1\*\*, i.e. can have the following values: 0, 0.25, 0.5, 0.75, 1. The higher, the more fragile.
 
 The higher, the more fragile.
 
 ## Index Questions
 
-### Q5.5.1: Over the past year, how often, if ever, have you or anyone in your family gone without enough foor to eat? {.tabset} 
+### Q10.1.2: How much confidence do you have in your state government? {.tabset}
+
+0 (none) to 1 (a lot)
+
+```{r}
+# # Use grep to find column names that start with 'bass'
+# matching_columns <- grep("county", names(sudan_v2_df), value = TRUE)
+# 
+# # Print the matching columns
+# matching_columns
+
+names(sudan_v2_df)
+
+```
 
 #### Entire sample
 
-```{r Q5.5.1, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
+```{r Q10.1.2_raw, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
 
-df %>% 
-  summarize(mean = mean(Q5.5.1_unimputed, na.rm = TRUE)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df |>
+  summarize(mean = mean(Q10.1.2_unimputed, na.rm = TRUE)) |>
+  kable(align = "lc") |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q5.5.1_raw) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(answers)) %>%
-  select(Q5.5.1_raw, answers) %>%
-  mutate(percentage = answers/sum(answers)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df |>
+  group_by(Q10.1.2_raw) |>
+  summarise(answers = n()) |>
+  arrange(desc(answers)) |>
+  select(Q10.1.2_raw, answers) |>
+  mutate(percentage = answers/sum(answers)) |>
+  kable(align = "lc") |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q5.5.1_raw) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(-answers)) %>%
-  select(Q5.5.1_raw, answers) %>%
-  mutate(percentage = answers / sum(answers),
-         Q5.5.1_raw = factor(Q5.5.1_raw)) %>%
-  ggplot(aes(Q5.5.1_raw, answers)) +
+sudan_v2_df |>
+  group_by(Q10.1.2_raw) |>
+  summarise(answers = n()) |>
+  arrange(desc(-answers)) |>
+  select(Q10.1.2_raw, answers) |>
+  mutate(percentage = answers / sum(answers), Q10.1.2_raw = factor(Q10.1.2_raw)) |>
+  ggplot(aes(Q10.1.2_raw, answers)) +
   geom_col(fill = "#263e58") +
-  labs(x = "Q5.5.1", y = "Number of respondents") +
+  labs(x = "Q10.1.2: Trust in State Governments", y = "Number of respondents") +
   theme(axis.text.x = element_text(size = 11),
         axis.title.x = element_text(margin = margin(t = 10))) +
+  theme_minimal() +
   coord_flip()
 
 ```
 
 #### By county
 
-```{r Q5.5.1 by county, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
+```{r Q10.1.2_raw by county, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
 
-df %>% 
-  group_by(Q1.5_County) %>% 
-  summarize(mean = mean(Q5.5.1_unimputed, na.rm = TRUE)) %>% 
-  kable(align = "lc") %>%
+sudan_v2_df |> 
+  group_by(Q1.5_County) |> 
+  summarize(mean = mean(Q10.1.2_unimputed, na.rm = TRUE)) |> 
+  kable(align = "lc") |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q5.5.1_raw, Q1.5_County) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(Q1.5_County)) %>%
-  select(Q1.5_County, Q5.5.1_raw, answers) %>%
-  mutate(percentage = answers/sum(answers)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df|>
+  group_by(Q10.1.2_raw, Q1.5_County) |>
+  summarize(answers = n()) |>
+  arrange(desc(Q1.5_County)) |>
+  select(Q1.5_County, Q10.1.2_raw, answers) |>
+  mutate(percentage = answers/sum(answers)) |>
+  kable(align = "lc") |>
   kable_styling(position = "left", full_width = F)
 
 ```
 
-### Q5.5.2: Over the past year, how often, if ever, have you or anyone in your family gone without enough clean water for home use? {.tabset} 
+### Q10.1.10: How much confidence do you have in informal authorities, such as councils of elders? {.tabset}
+
+0 (none) to 1 (a lot)
 
 #### Entire sample
 
@@ -172,7 +191,9 @@ df %>%
 
 ```
 
-### Q5.5.3: Over the past year, how often, if ever, have you or anyone in your family gone without necessary medicines or medical treatment? {.tabset} 
+### Q10.10: South Sudan’s next national elections are scheduled for December 2024 after being postponed several times. How safe or unsafe would you feel going to a polling station to cast your vote? {.tabset}
+
+0 (very unsafe) to 1 (very safe)
 
 #### Entire sample
 
@@ -229,7 +250,9 @@ df %>%
 
 ```
 
-### Q7.1: What type of shelter are you currently living in? {.tabset} 
+### Q10.12: At present, how safe do you feel speaking publicly on politically sensitive issues? {.tabset}
+
+0(very unsafe) to 1(very safe)
 
 #### Entire sample
 
@@ -286,7 +309,9 @@ df %>%
 
 ```
 
-### Q8.5.6: On a scale from 1 to 5, where 1 means “very unfrightened” and 5 means “very frightened,” how afraid are you of the sexual violence in your community? {.tabset} 
+### Q10.13: Which of the following statements best describes the role that politicians in Juba play in your community? {.tabset}
+
+0(they make the community much less safe) to 1(they make the community much more safe)
 
 #### Entire sample
 
@@ -343,6 +368,18 @@ df %>%
 
 ```
 
-## Additional Questions
+## 
 
-Coming soon...
+# Additional Political/Legal Descriptive Questions
+
+### Q9.1 {.tabset}
+
+### Q9.2 {.tabset}
+
+### Q9.3 {.tabset}
+
+### Q9.4 {.tabset}
+
+### Q9.5 {.tabset}
+
+### Q10.1 ALL {.tabset}
