@@ -59,7 +59,7 @@ All the descriptives calculated for index questions were based on the **unimpute
 #names(sudan_v2_df)
 
 # Use grep to find column names
-matching_columns <- grep("^Q10.1.10", names(sudan_v2_df), value = TRUE)
+matching_columns <- grep("^Q10.13", names(sudan_v2_df), value = TRUE)
 
 # Print the matching columns
 matching_columns
@@ -167,7 +167,7 @@ sudan_v2_df |>
   summarise(answers = n()) |>
   arrange(desc(-answers)) |>
   select(Q10.1.10_raw, answers) |>
-  mutate(percentage = answers / sum(answers), Q10.1.2_raw = factor(Q10.1.10_raw)) |>
+  mutate(percentage = answers / sum(answers), Q10.1.10_raw = factor(Q10.1.10_raw)) |>
   ggplot(aes(Q10.1.10_raw, answers)) +
   geom_col(fill = "#263e58") +
   geom_text(aes(label = answers), 
@@ -179,8 +179,6 @@ sudan_v2_df |>
         axis.title.x = element_text(margin = margin(t = 10))) +
   theme_minimal() +
   coord_flip()
-
-
 ```
 
 #### By county
@@ -210,55 +208,60 @@ sudan_v2_df|>
 
 #### Entire sample
 
-```{r Q5.5.3, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+```{r Q10.10_raw, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
 
-df %>% 
-  summarize(mean = mean(Q5.5.3_unimputed, na.rm = TRUE)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df |>
+  summarize(mean = mean(Q10.10_unimputed, na.rm = TRUE)) |>
+  kable(align = "lc") |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q5.5.3_raw) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(answers)) %>%
-  select(Q5.5.3_raw, answers) %>%
-  mutate(percentage = answers/sum(answers)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df |>
+  group_by(Q10.10_raw) |>
+  summarise(answers = n()) |>
+  arrange(desc(answers)) |>
+  select(Q10.10_raw, answers) |>
+  mutate(percentage = answers/sum(answers)) |>
+  kable(align = "lc", 
+        col.names = c("Response", "Number of Responses", "Percent of Total Responses")) |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q5.5.3_raw) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(-answers)) %>%
-  select(Q5.5.3_raw, answers) %>%
-  mutate(percentage = answers / sum(answers),
-         Q5.5.3_raw = factor(Q5.5.3_raw)) %>%
-  ggplot(aes(Q5.5.3_raw, answers)) +
+sudan_v2_df |>
+  group_by(Q10.10_raw) |>
+  summarise(answers = n()) |>
+  arrange(desc(-answers)) |>
+  select(Q10.10_raw, answers) |>
+  mutate(percentage = answers / sum(answers), Q10.10_raw = factor(Q10.10_raw)) |>
+  ggplot(aes(Q10.10_raw, answers)) +
   geom_col(fill = "#263e58") +
-  labs(x = "Q5.5.3", y = "Number of respondents") +
+  geom_text(aes(label = answers), 
+            vjust = 0.5,
+            hjust = -0.3,
+            size = 2.0) +
+  labs(x = "Q10.10: Participation in Democracy Without Fear", y = "Number of respondents") +
   theme(axis.text.x = element_text(size = 11),
         axis.title.x = element_text(margin = margin(t = 10))) +
+  theme_minimal() +
   coord_flip()
 
 ```
 
 #### By county
 
-```{r Q5.5.3 by county, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+```{r Q10.10_raw by county, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
 
-df %>% 
-  group_by(Q1.5_County) %>% 
-  summarize(mean = mean(Q5.5.3_unimputed, na.rm = TRUE)) %>% 
-  kable(align = "lc") %>%
+sudan_v2_df |> 
+  group_by(Q1.5_County) |> 
+  summarize(mean = mean(Q10.10_unimputed, na.rm = TRUE)) |> 
+  kable(align = "lc", col.names = c("County", "Mean Response (0 to 1)")) |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q5.5.3_raw, Q1.5_County) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(Q1.5_County)) %>%
-  select(Q1.5_County, Q5.5.3_raw, answers) %>%
-  mutate(percentage = answers/sum(answers)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df|>
+  group_by(Q10.10_raw, Q1.5_County) |>
+  summarize(answers = n()) |>
+  arrange(desc(Q1.5_County)) |>
+  select(Q1.5_County, Q10.10_raw, answers) |>
+  mutate(percentage = answers/sum(answers)) |>
+  kable(align = "lc", col.names = c("County", "Response", "Number of Responses", "Percent of Total Responses")) |>
   kable_styling(position = "left", full_width = F)
 
 ```
@@ -269,55 +272,59 @@ df %>%
 
 #### Entire sample
 
-```{r Q7.1, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+```{r Q10.12_raw, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
 
-df %>% 
-  summarize(mean = mean(Q7.1_unimputed, na.rm = TRUE)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df |>
+  summarize(mean = mean(Q10.12_unimputed, na.rm = TRUE)) |>
+  kable(align = "lc") |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q7.1_raw) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(answers)) %>%
-  select(Q7.1_raw, answers) %>%
-  mutate(percentage = answers/sum(answers)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df |>
+  group_by(Q10.12_raw) |>
+  summarise(answers = n()) |>
+  arrange(desc(answers)) |>
+  select(Q10.12_raw, answers) |>
+  mutate(percentage = answers/sum(answers)) |>
+  kable(align = "lc", 
+        col.names = c("Response", "Number of Responses", "Percent of Total Responses")) |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q7.1_raw) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(-answers)) %>%
-  select(Q7.1_raw, answers) %>%
-  mutate(percentage = answers / sum(answers),
-         Q7.1_raw = factor(Q7.1_raw)) %>%
-  ggplot(aes(Q7.1_raw, answers)) +
+sudan_v2_df |>
+  group_by(Q10.12_raw) |>
+  summarise(answers = n()) |>
+  arrange(desc(-answers)) |>
+  select(Q10.12_raw, answers) |>
+  mutate(percentage = answers / sum(answers), Q10.12_raw = factor(Q10.12_raw)) |>
+  ggplot(aes(Q10.12_raw, answers)) +
   geom_col(fill = "#263e58") +
-  labs(x = "Q7.1", y = "Number of respondents") +
+  geom_text(aes(label = answers), 
+            vjust = 0.5,
+            hjust = -0.3,
+            size = 2.0) +
+  labs(x = "Q10.12: Freedom of Speech", y = "Number of respondents") +
   theme(axis.text.x = element_text(size = 11),
         axis.title.x = element_text(margin = margin(t = 10))) +
+  theme_minimal() +
   coord_flip()
-
 ```
 
 #### By county
 
-```{r Q7.1 by county, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+```{r Q10.12_raw by county, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
 
-df %>% 
-  group_by(Q1.5_County) %>% 
-  summarize(mean = mean(Q7.1_unimputed, na.rm = TRUE)) %>% 
-  kable(align = "lc") %>%
+sudan_v2_df |> 
+  group_by(Q1.5_County) |> 
+  summarize(mean = mean(Q10.12_unimputed, na.rm = TRUE)) |> 
+  kable(align = "lc", col.names = c("County", "Mean Response (0 to 1)")) |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q7.1_raw, Q1.5_County) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(Q1.5_County)) %>%
-  select(Q1.5_County, Q7.1_raw, answers) %>%
-  mutate(percentage = answers/sum(answers)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df|>
+  group_by(Q10.12_raw, Q1.5_County) |>
+  summarize(answers = n()) |>
+  arrange(desc(Q1.5_County)) |>
+  select(Q1.5_County, Q10.12_raw, answers) |>
+  mutate(percentage = answers/sum(answers)) |>
+  kable(align = "lc", col.names = c("County", "Response", "Number of Responses", "Percent of Total Responses")) |>
   kable_styling(position = "left", full_width = F)
 
 ```
@@ -328,55 +335,59 @@ df %>%
 
 #### Entire sample
 
-```{r Q8.5.6, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+```{r Q10.13_raw, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
 
-df %>% 
-  summarize(mean = mean(Q8.5.6_unimputed, na.rm = TRUE)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df |>
+  summarize(mean = mean(Q10.13_unimputed, na.rm = TRUE)) |>
+  kable(align = "lc") |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q8.5.6_raw) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(answers)) %>%
-  select(Q8.5.6_raw, answers) %>%
-  mutate(percentage = answers/sum(answers)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df |>
+  group_by(Q10.13_raw) |>
+  summarise(answers = n()) |>
+  arrange(desc(answers)) |>
+  select(Q10.13_raw, answers) |>
+  mutate(percentage = answers/sum(answers)) |>
+  kable(align = "lc", 
+        col.names = c("Response", "Number of Responses", "Percent of Total Responses")) |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q8.5.6_raw) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(-answers)) %>%
-  select(Q8.5.6_raw, answers) %>%
-  mutate(percentage = answers / sum(answers),
-         Q8.5.6_raw = factor(Q8.5.6_raw)) %>%
-  ggplot(aes(Q8.5.6_raw, answers)) +
+sudan_v2_df |>
+  group_by(Q10.13_raw) |>
+  summarise(answers = n()) |>
+  arrange(desc(-answers)) |>
+  select(Q10.13_raw, answers) |>
+  mutate(percentage = answers / sum(answers), Q10.13_raw = factor(Q10.13_raw)) |>
+  ggplot(aes(Q10.13_raw, answers)) +
   geom_col(fill = "#263e58") +
-  labs(x = "Q8.5.6", y = "Number of respondents") +
+  geom_text(aes(label = answers), 
+            vjust = 0.5,
+            hjust = -0.3,
+            size = 2.0) +
+  labs(x = "Q10.13: Trust in National Government", y = "Number of respondents") +
   theme(axis.text.x = element_text(size = 11),
         axis.title.x = element_text(margin = margin(t = 10))) +
+  theme_minimal() +
   coord_flip()
-
 ```
 
 #### By county
 
-```{r Q8.5 by county, eval = TRUE, echo = FALSE, warnings = FALSE, message = FALSE, out.width="65%"}
+```{r Q10.13_raw by county, eval = TRUE, warnings = FALSE, echo = FALSE, message = FALSE, out.width="65%"}
 
-df %>% 
-  group_by(Q1.5_County) %>% 
-  summarize(mean = mean(Q8.5.6_unimputed, na.rm = TRUE)) %>% 
-  kable(align = "lc") %>%
+sudan_v2_df |> 
+  group_by(Q1.5_County) |> 
+  summarize(mean = mean(Q10.13_unimputed, na.rm = TRUE)) |> 
+  kable(align = "lc", col.names = c("County", "Mean Response (0 to 1)")) |>
   kable_styling(position = "left", full_width = F)
 
-df %>%
-  group_by(Q8.5.6_raw, Q1.5_County) %>%
-  summarise(answers = n()) %>%
-  arrange(desc(Q1.5_County)) %>%
-  select(Q1.5_County, Q8.5.6_raw, answers) %>%
-  mutate(percentage = answers/sum(answers)) %>%
-  kable(align = "lc") %>%
+sudan_v2_df|>
+  group_by(Q10.13_raw, Q1.5_County) |>
+  summarize(answers = n()) |>
+  arrange(desc(Q1.5_County)) |>
+  select(Q1.5_County, Q10.13_raw, answers) |>
+  mutate(percentage = answers/sum(answers)) |>
+  kable(align = "lc", col.names = c("County", "Response", "Number of Responses", "Percent of Total Responses")) |>
   kable_styling(position = "left", full_width = F)
 
 ```
